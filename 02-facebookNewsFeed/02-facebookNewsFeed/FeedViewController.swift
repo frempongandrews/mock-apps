@@ -38,7 +38,7 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         //Look dimensions of profileImageImageView: 76 = 60 + top(8) + bottom(8)
-        return CGSize(width: view.frame.width, height: 200)
+        return CGSize(width: view.frame.width, height: 500)
     }
     
     
@@ -53,9 +53,19 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
 
 class CustomCell: UICollectionViewCell {
     
+    //runs immediately
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .white
+        setupViews()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     let profileImageImageView: UIImageView = {
-       let imageView = UIImageView()
+        let imageView = UIImageView()
         //imageView.backgroundColor = .green
         imageView.contentMode = .scaleAspectFill
         imageView.image = #imageLiteral(resourceName: "zuck")
@@ -63,6 +73,7 @@ class CustomCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
+    
     
     
     let profileNameLabel: UILabel = {
@@ -113,24 +124,17 @@ class CustomCell: UICollectionViewCell {
     
     //status image
     
-    let profileStatusImage = { () -> UIImageView in
+    let profileStatusImageView = { () -> UIImageView in
         let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "zuck-dog")
         imageView.contentMode = .scaleToFill
+        //remove pixels that we don't want
+        imageView.layer.masksToBounds = true
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        backgroundColor = .white
-        
-        setupViews()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     func setupViews () {
        
@@ -177,8 +181,13 @@ class CustomCell: UICollectionViewCell {
         statusTextLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: 8).isActive = true
         
         
+        //status image
         
+        addSubview(profileStatusImageView)
         
+        profileStatusImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
+        profileStatusImageView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
+        profileStatusImageView.topAnchor.constraint(equalTo: statusTextLabel.bottomAnchor, constant: 10).isActive = true
         
     }
 }
