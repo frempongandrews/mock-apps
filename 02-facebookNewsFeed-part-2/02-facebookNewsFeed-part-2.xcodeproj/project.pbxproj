@@ -8,20 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		B8697F0D1F91249700A8CFE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8697F0C1F91249700A8CFE0 /* AppDelegate.swift */; };
-		B8697F0F1F91249700A8CFE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8697F0E1F91249700A8CFE0 /* ViewController.swift */; };
-		B8697F121F91249700A8CFE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B8697F101F91249700A8CFE0 /* Main.storyboard */; };
+		B8697F0F1F91249700A8CFE0 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8697F0E1F91249700A8CFE0 /* FeedViewController.swift */; };
 		B8697F141F91249700A8CFE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8697F131F91249700A8CFE0 /* Assets.xcassets */; };
 		B8697F171F91249700A8CFE0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B8697F151F91249700A8CFE0 /* LaunchScreen.storyboard */; };
+		B8697F451F925AF900A8CFE0 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8697F441F925AF900A8CFE0 /* UIColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B8697F091F91249700A8CFE0 /* 02-facebookNewsFeed-part-2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "02-facebookNewsFeed-part-2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8697F0C1F91249700A8CFE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B8697F0E1F91249700A8CFE0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B8697F111F91249700A8CFE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B8697F0E1F91249700A8CFE0 /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		B8697F131F91249700A8CFE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B8697F161F91249700A8CFE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B8697F181F91249700A8CFE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B8697F441F925AF900A8CFE0 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,11 +55,11 @@
 			isa = PBXGroup;
 			children = (
 				B8697F0C1F91249700A8CFE0 /* AppDelegate.swift */,
-				B8697F0E1F91249700A8CFE0 /* ViewController.swift */,
-				B8697F101F91249700A8CFE0 /* Main.storyboard */,
+				B8697F0E1F91249700A8CFE0 /* FeedViewController.swift */,
 				B8697F131F91249700A8CFE0 /* Assets.xcassets */,
 				B8697F151F91249700A8CFE0 /* LaunchScreen.storyboard */,
 				B8697F181F91249700A8CFE0 /* Info.plist */,
+				B8697F441F925AF900A8CFE0 /* UIColorExtension.swift */,
 			);
 			path = "02-facebookNewsFeed-part-2";
 			sourceTree = "<group>";
@@ -125,7 +125,6 @@
 			files = (
 				B8697F171F91249700A8CFE0 /* LaunchScreen.storyboard in Resources */,
 				B8697F141F91249700A8CFE0 /* Assets.xcassets in Resources */,
-				B8697F121F91249700A8CFE0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,22 +135,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8697F0F1F91249700A8CFE0 /* ViewController.swift in Sources */,
+				B8697F0F1F91249700A8CFE0 /* FeedViewController.swift in Sources */,
 				B8697F0D1F91249700A8CFE0 /* AppDelegate.swift in Sources */,
+				B8697F451F925AF900A8CFE0 /* UIColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B8697F101F91249700A8CFE0 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B8697F111F91249700A8CFE0 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B8697F151F91249700A8CFE0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

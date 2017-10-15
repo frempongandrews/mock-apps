@@ -16,6 +16,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.makeKeyAndVisible()
+        let flowLayout = UICollectionViewFlowLayout()
+        let feedViewController = FeedViewController(collectionViewLayout: flowLayout)
+        let navigationController = UINavigationController(rootViewController: feedViewController)
+        
+        //navbar background
+        
+        UINavigationBar.appearance().barTintColor = UIColor.init(red: 51/255, green: 91/255, blue: 149/255, alpha: 1)
+        
+        //navigation title to white
+        let attrs = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        UINavigationBar.appearance().titleTextAttributes = attrs
+        
+        //status bar white
+        //add to info plist row "View controler-based status bar appearance"
+        UIApplication.shared.statusBarStyle = .lightContent
+        
+        window?.rootViewController = navigationController
+        
         return true
     }
 
