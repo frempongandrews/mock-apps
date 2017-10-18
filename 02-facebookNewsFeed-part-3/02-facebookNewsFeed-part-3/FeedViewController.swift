@@ -22,13 +22,14 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         
         let zucPost = Post(profileName: "Zuc", statusText: "Meanwhile, Beats turns to the dark side", statusImage: #imageLiteral(resourceName: "zuck-dog"), profileImage: #imageLiteral(resourceName: "zuck"))
         let jobsPost = Post(profileName: "Steve Jobs",
-                            statusText: "Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it.",
+                            statusText: "Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it.",
                             statusImage: #imageLiteral(resourceName: "steve_status"), profileImage: #imageLiteral(resourceName: "steve_profile") )
         
         
         
         posts.append(zucPost)
         posts.append(jobsPost)
+        posts.append(zucPost)
         
         
         //print(posts.count)
@@ -53,7 +54,23 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
     //for size need flow layout delegate
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.size.width, height: 400)
+        
+        //calculating exact size of status text that can vary
+        
+        let knownHeight = CGFloat(380)
+        let statusText = posts[indexPath.item].statusText
+        
+        //we use the font size of the text to calculate the height
+        let rect = NSString(string: statusText).boundingRect(with: CGSize(width: view.frame.size.width - 16, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
+        
+        //24 is just if 'bounding rect underestimates the lenth as it alwas does'
+        let totalHeight = CGFloat(knownHeight + 24 + rect.height)
+        
+        //return CGSize(width: view.frame.size.width, height: totalHeight)
+        print(totalHeight)
+//        print(statusText)
+//        print(rect.size)
+        return CGSize(width: view.frame.size.width, height: totalHeight)
     }
     
 } //<!-- End FeedViewController -->
@@ -90,7 +107,9 @@ class CustomFeedCell: UICollectionViewCell {
             
             //setting status text
             
-            if let statusText =
+            if let statusText = post?.statusText {
+                statusTextView.text = statusText
+            }
             
         }
     }
@@ -112,7 +131,7 @@ class CustomFeedCell: UICollectionViewCell {
         //adding subviews
         addSubview(profileImageView)
         addSubview(profileNameLabel)
-        addSubview(statusTextLabel)
+        addSubview(statusTextView)
         addSubview(statusImageView)
         addSubview(likesAndCommentsLabel)
         addSubview(divider)
@@ -120,6 +139,8 @@ class CustomFeedCell: UICollectionViewCell {
         likeCommentShareContainer.addSubview(likeButton)
         likeCommentShareContainer.addSubview(commentsButton)
         likeCommentShareContainer.addSubview(shareButton)
+        
+        
         //profileImageView
         
         profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
@@ -134,35 +155,40 @@ class CustomFeedCell: UICollectionViewCell {
         profileNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
         
         //statusTextLabel
-        statusTextLabel.leftAnchor.constraint(equalTo: profileImageView.leftAnchor, constant: 0).isActive = true
-        statusTextLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8).isActive = true
+        statusTextView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8).isActive = true
+        statusTextView.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
+        statusTextView.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
+        statusTextView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8).isActive = true
         
         //statusImageView
         statusImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
         statusImageView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-        statusImageView.topAnchor.constraint(equalTo: statusTextLabel.bottomAnchor, constant: 12).isActive = true
-        statusImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -80).isActive = true
+        statusImageView.topAnchor.constraint(equalTo: statusTextView.bottomAnchor, constant: 20).isActive = true
+        //set image fix height to 200
+        statusImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        
         
         //likesAndCommentsLabel
         
-        likesAndCommentsLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
-        likesAndCommentsLabel.topAnchor.constraint(equalTo: statusImageView.bottomAnchor, constant: 20).isActive = true
+       likesAndCommentsLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
+       likesAndCommentsLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
+       likesAndCommentsLabel.topAnchor.constraint(equalTo: statusImageView.bottomAnchor, constant: 25).isActive = true
         
         
         //divider
         
         divider.leftAnchor.constraint(equalTo: leftAnchor, constant: 12).isActive = true
         divider.rightAnchor.constraint(equalTo: rightAnchor, constant: -12).isActive = true
-        divider.topAnchor.constraint(equalTo: likesAndCommentsLabel.bottomAnchor, constant: 4).isActive = true
+        divider.topAnchor.constraint(equalTo: likesAndCommentsLabel.bottomAnchor, constant: 8).isActive = true
         divider.heightAnchor.constraint(equalToConstant: 0.3).isActive = true
-        
+//
         
         //likeCommentShareContainer
         likeCommentShareContainer.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
         likeCommentShareContainer.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
         likeCommentShareContainer.topAnchor.constraint(equalTo: likesAndCommentsLabel.bottomAnchor, constant: 8).isActive = true
         likeCommentShareContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
-        likeCommentShareContainer.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        
         
         //likeButton
         let oneThirdWidth = self.frame.size.width/3
@@ -176,27 +202,16 @@ class CustomFeedCell: UICollectionViewCell {
         //comments button
         
         commentsButton.leftAnchor.constraint(equalTo: likeButton.rightAnchor, constant: 0).isActive = true
-        commentsButton.topAnchor.constraint(equalTo: likeCommentShareContainer.topAnchor, constant: 0).isActive = true
-        commentsButton.bottomAnchor.constraint(equalTo: likeCommentShareContainer.bottomAnchor, constant: 0).isActive = true
         commentsButton.widthAnchor.constraint(equalToConstant: oneThirdWidth).isActive = true
-        
+        commentsButton.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor, constant: 0).isActive = true
+
+
+
         //share button
         
-        
         shareButton.leftAnchor.constraint(equalTo: commentsButton.rightAnchor, constant: 0).isActive = true
-        shareButton.topAnchor.constraint(equalTo: likeCommentShareContainer.topAnchor, constant: 0).isActive = true
-        shareButton.bottomAnchor.constraint(equalTo: likeCommentShareContainer.bottomAnchor, constant: 0).isActive = true
         shareButton.widthAnchor.constraint(equalToConstant: oneThirdWidth).isActive = true
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        shareButton.centerYAnchor.constraint(equalTo: commentsButton.centerYAnchor, constant: 0).isActive = true
         
     }// end setupViews
 
@@ -221,15 +236,14 @@ class CustomFeedCell: UICollectionViewCell {
     
     
     
-    let statusTextLabel = {() -> UILabel in
+    let statusTextView = {() -> UITextView in
         
-        let label = UILabel()
-        label.text = "Meanwhile, Beast turned to the dark side"
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.numberOfLines = 0
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-       return label
+        let textView = UITextView()
+        //label.text = "Meanwhile, Beast turned to the dark side"
+        textView.font = UIFont.systemFont(ofSize: 14)
+        textView.isScrollEnabled = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+       return textView
     }()
     
     let statusImageView = {() -> UIImageView in
@@ -256,7 +270,7 @@ class CustomFeedCell: UICollectionViewCell {
     let divider = { () -> UIView in
         
         let v = UIView()
-        //v.backgroundColor = .gray
+        v.backgroundColor = .gray
         v.translatesAutoresizingMaskIntoConstraints = false
         return v
         
@@ -276,18 +290,12 @@ class CustomFeedCell: UICollectionViewCell {
     static func createButtonWithTitle (title: String, icon: UIImage) -> UIButton {
         
         let resultButton = {() -> UIButton in
-            
             let button = UIButton()
-            
             //button.setTitleColor(.gray, for: .normal)
             button.setImage(icon, for: .normal)
-            
-            
-            
             button.setAttributedTitle(NSAttributedString(string: title, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12), NSAttributedStringKey.foregroundColor: UIColor.gray]), for: .normal)
             
-            
-            //button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
             
             //=======> END ANKI
             
