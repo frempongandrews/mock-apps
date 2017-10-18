@@ -10,7 +10,7 @@ import UIKit
 
 class FeedViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    var posts: [Post]?
+    var posts: [Post] = []
     let cellId = "cell"
     
     override func viewDidLoad() {
@@ -21,20 +21,32 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         navigationItem.title = "Facebook Feed"
         
         let zucPost = Post(profileName: "Zuc", statusText: "Meanwhile, Beats turns to the dark side", statusImage: #imageLiteral(resourceName: "zuck-dog"), profileImage: #imageLiteral(resourceName: "zuck"))
-        let jobsPost = Post(profileName: "Steve Jobs", statusText: "Design is when ", statusImage: <#T##UIImage?#>, profileImage: <#T##UIImage#>)
+        let jobsPost = Post(profileName: "Steve Jobs",
+                            statusText: "Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it.",
+                            statusImage: #imageLiteral(resourceName: "steve_status"), profileImage: #imageLiteral(resourceName: "steve_profile") )
         
+        
+        
+        posts.append(zucPost)
+        posts.append(jobsPost)
+        
+        
+        //print(posts.count)
         //register cell
         collectionView?.register(CustomFeedCell.self, forCellWithReuseIdentifier: cellId)
+        
         
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        
+        return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! CustomFeedCell
+        let post = posts[indexPath.item]
+        cell.post = post
         return cell
     }
     
@@ -48,6 +60,40 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
 
 
 class CustomFeedCell: UICollectionViewCell {
+    
+    var post:Post? {
+        didSet {
+            //Checking if we have properties on the post object and assigning their values to the various ui components
+            
+            //setting the profile name
+                let attributedText = NSMutableAttributedString(string: post?.profileName ?? "", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 16)])
+                
+                attributedText.append(NSAttributedString(string: "\nDecember  18  ‧  San Francisco  ‧  ", attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)]))
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.lineSpacing = 4
+                attributedText.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
+                
+                //globe image
+                let attachment = NSTextAttachment()
+                attachment.image = #imageLiteral(resourceName: "globe")
+                attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
+                attributedText.append(NSAttributedString(attachment: attachment))
+                
+                profileNameLabel.attributedText = attributedText
+                
+                profileNameLabel.translatesAutoresizingMaskIntoConstraints = false
+            
+            //setting the profile image
+            if let profileImage = post?.profileImage {
+                profileImageView.image = profileImage
+            }
+            
+            //setting status text
+            
+            if let statusText =
+            
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -153,40 +199,27 @@ class CustomFeedCell: UICollectionViewCell {
         
         
     }// end setupViews
-    
+
+
+
+    let profileNameLabel = { () -> UILabel in
+        let label = UILabel()
+        label.numberOfLines = 2
+        return label
+    }()
+
     let profileImageView = { () -> UIImageView in
         
        let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "zuck")
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .green
+        //imageView.backgroundColor = .green
         imageView.layer.cornerRadius = 30
         imageView.layer.masksToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    let profileNameLabel = { () -> UILabel in
-       let label = UILabel()
-        label.numberOfLines = 2
-        let attributedText = NSMutableAttributedString(string: "Mark Zuckerberg", attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 16)])
-        
-        attributedText.append(NSAttributedString(string: "\nDecember  18  ‧  San Francisco  ‧  ", attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray, NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12)]))
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 4
-        attributedText.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.length))
-        
-        //globe image
-        let attachment = NSTextAttachment()
-        attachment.image = #imageLiteral(resourceName: "globe")
-        attachment.bounds = CGRect(x: 0, y: -2, width: 12, height: 12)
-        attributedText.append(NSAttributedString(attachment: attachment))
-        
-        label.attributedText = attributedText
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    
     
     let statusTextLabel = {() -> UILabel in
         
@@ -245,14 +278,16 @@ class CustomFeedCell: UICollectionViewCell {
         let resultButton = {() -> UIButton in
             
             let button = UIButton()
-            button.setTitle(title, for: .normal)
+            
             //button.setTitleColor(.gray, for: .normal)
             button.setImage(icon, for: .normal)
             
-            //=======> ANKI
+            
+            
             button.setAttributedTitle(NSAttributedString(string: title, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12), NSAttributedStringKey.foregroundColor: UIColor.gray]), for: .normal)
-            //button.backgroundColor = .red
-            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+            
+            
+            //button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
             
             //=======> END ANKI
             
