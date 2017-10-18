@@ -20,16 +20,20 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         collectionView?.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
         navigationItem.title = "Facebook Feed"
         
-        let zucPost = Post(profileName: "Zuc", statusText: "Meanwhile, Beats turns to the dark side", statusImage: #imageLiteral(resourceName: "zuck-dog"), profileImage: #imageLiteral(resourceName: "zuck"))
+        let zucPost = Post(profileName: "Mark Zuckerberg", statusText: "Meanwhile, Beats turns to the dark side", statusImage: #imageLiteral(resourceName: "zuck-dog"), profileImage: #imageLiteral(resourceName: "zuck"))
         let jobsPost = Post(profileName: "Steve Jobs",
                             statusText: "Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it.",
                             statusImage: #imageLiteral(resourceName: "steve_status"), profileImage: #imageLiteral(resourceName: "steve_profile") )
+        let gandhiPost = Post(profileName: "Mahatma Gandhi",
+                              statusText: "Live as if you were to die tomorrow; learn as if you were to live forever. The weak can never forgive. Forgiveness is the attribute of the strong. Happiness is when what you think, what you say and what you do are in harmony.",
+                              statusImage: #imageLiteral(resourceName: "gandhi_status"),
+                              profileImage: #imageLiteral(resourceName: "gandi_profile"))
         
         
         
         posts.append(zucPost)
         posts.append(jobsPost)
-        posts.append(zucPost)
+        posts.append(gandhiPost)
         
         
         //print(posts.count)
@@ -59,18 +63,21 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         
         let knownHeight = CGFloat(380)
         let statusText = posts[indexPath.item].statusText
-        
         //we use the font size of the text to calculate the height
+        //the first CGSize refers to constraints I decide:
+        //this case, width: view.frame.size.width - 16
+        //(16 because text has 8 padding on both sides)
         let rect = NSString(string: statusText).boundingRect(with: CGSize(width: view.frame.size.width - 16, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
         
-        //24 is just if 'bounding rect underestimates the lenth as it alwas does'
-        let totalHeight = CGFloat(knownHeight + 24 + rect.height)
+        //24 is just if 'bounding rect underestimates the length'
+        let totalCellHeight = CGFloat(knownHeight + 24 + rect.height)
         
-        //return CGSize(width: view.frame.size.width, height: totalHeight)
-        print(totalHeight)
+        return CGSize(width: view.frame.size.width, height: totalCellHeight)
+        
+//        print(totalCellHeight)
 //        print(statusText)
 //        print(rect.size)
-        return CGSize(width: view.frame.size.width, height: totalHeight)
+  
     }
     
 } //<!-- End FeedViewController -->
@@ -109,6 +116,10 @@ class CustomFeedCell: UICollectionViewCell {
             
             if let statusText = post?.statusText {
                 statusTextView.text = statusText
+            }
+            
+            if let statusImage = post?.statusImage {
+                statusImageView.image = statusImage
             }
             
         }
@@ -163,7 +174,7 @@ class CustomFeedCell: UICollectionViewCell {
         //statusImageView
         statusImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
         statusImageView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-        statusImageView.topAnchor.constraint(equalTo: statusTextView.bottomAnchor, constant: 20).isActive = true
+        statusImageView.topAnchor.constraint(equalTo: statusTextView.bottomAnchor, constant: 15).isActive = true
         //set image fix height to 200
         statusImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
@@ -172,7 +183,7 @@ class CustomFeedCell: UICollectionViewCell {
         
        likesAndCommentsLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
        likesAndCommentsLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
-       likesAndCommentsLabel.topAnchor.constraint(equalTo: statusImageView.bottomAnchor, constant: 25).isActive = true
+       likesAndCommentsLabel.topAnchor.constraint(equalTo: statusImageView.bottomAnchor, constant: 10).isActive = true
         
         
         //divider
@@ -249,9 +260,11 @@ class CustomFeedCell: UICollectionViewCell {
     let statusImageView = {() -> UIImageView in
         
         let imageview = UIImageView()
-        imageview.image = #imageLiteral(resourceName: "zuck-dog")
+        //imageview.image = #imageLiteral(resourceName: "zuck-dog")
         imageview.contentMode = .scaleAspectFill
-        
+        //!!very important: set masksToBounds to true -> cuts of unnecessary pixels
+        //from image and sets its height to one defined in constraints
+        imageview.layer.masksToBounds = true
         imageview.translatesAutoresizingMaskIntoConstraints = false
         return imageview
     }()
