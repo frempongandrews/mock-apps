@@ -8,6 +8,8 @@
 
 import UIKit
 
+var cacheDictionary: [String: UIImage] = [:]
+
 class FeedViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     var posts: [Post] = []
@@ -20,14 +22,14 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         collectionView?.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
         navigationItem.title = "Facebook Feed"
         
-        let zucPost = Post(profileName: "Mark Zuckerberg", statusText: "Meanwhile, Beats turns to the dark side", statusImage: #imageLiteral(resourceName: "zuck-dog"), profileImage: #imageLiteral(resourceName: "zuck"))
+        let zucPost = Post(profileName: "Mark Zuckerberg", statusText: "Meanwhile, Beats turns to the dark side", statusImageUrl: "https://s3-us-west-2.amazonaws.com/letsbuildthatapp/mark_zuckerberg_background.jpg", profileImage: #imageLiteral(resourceName: "zuck"), numLikes: 400, numComments: 123)
         let jobsPost = Post(profileName: "Steve Jobs",
                             statusText: "Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it. Design is not just how it looks like. Design is how it works. Being the richest man in the cemetery doesn't matter to me. Going to bed at night saying we've done something wonderful, that's what matters to me. Sometimes when you innovate, you make mistakes. It is best to admit them quickly and get on with it.",
-                            statusImage: #imageLiteral(resourceName: "steve_status"), profileImage: #imageLiteral(resourceName: "steve_profile") )
+                            statusImageUrl: "https://s3-us-west-2.amazonaws.com/letsbuildthatapp/steve_jobs_background.jpg", profileImage: #imageLiteral(resourceName: "steve_profile"), numLikes: 1000, numComments: 55 )
         let gandhiPost = Post(profileName: "Mahatma Gandhi",
                               statusText: "Live as if you were to die tomorrow; learn as if you were to live forever. The weak can never forgive. Forgiveness is the attribute of the strong. Happiness is when what you think, what you say and what you do are in harmony.",
-                              statusImage: #imageLiteral(resourceName: "gandhi_status"),
-                              profileImage: #imageLiteral(resourceName: "gandi_profile"))
+                              statusImageUrl: "https://s3-us-west-2.amazonaws.com/letsbuildthatapp/gandhi_status.jpg",
+                              profileImage: #imageLiteral(resourceName: "gandi_profile"), numLikes: 558, numComments: 2000)
         
         
         
@@ -67,16 +69,18 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         //the first CGSize refers to constraints I decide:
         //this case, width: view.frame.size.width - 16
         //(16 because text has 8 padding on both sides)
-        let rect = NSString(string: statusText).boundingRect(with: CGSize(width: view.frame.size.width - 16, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
+        if let unwrappedStatusText = statusText {
+            
+            let rect = NSString(string: unwrappedStatusText).boundingRect(with: CGSize(width: view.frame.size.width - 16, height: 1000), options: NSStringDrawingOptions.usesFontLeading.union(NSStringDrawingOptions.usesLineFragmentOrigin), attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
+            
+            //24 is just if 'bounding rect underestimates the length'
+            let totalCellHeight = CGFloat(knownHeight + 24 + rect.height)
+            
+            return CGSize(width: view.frame.size.width, height: totalCellHeight)
+        }
+       
         
-        //24 is just if 'bounding rect underestimates the length'
-        let totalCellHeight = CGFloat(knownHeight + 24 + rect.height)
-        
-        return CGSize(width: view.frame.size.width, height: totalCellHeight)
-        
-//        print(totalCellHeight)
-//        print(statusText)
-//        print(rect.size)
+        return CGSize(width: 0, height: 0)
   
     }
     
@@ -118,8 +122,42 @@ class CustomFeedCell: UICollectionViewCell {
                 statusTextView.text = statusText
             }
             
-            if let statusImage = post?.statusImage {
-                statusImageView.image = statusImage
+            if let statusImageUrl = post?.statusImageUrl {
+                //do network request
+                
+                let requestedUrl = URL(string: statusImageUrl)
+                let task = URLSession.shared.dataTask(with: requestedUrl!, completionHandler: { (data, response, error) in
+                    
+                    if error == nil {
+                        
+                        //if I previously made request, I saved the image
+                        if let cachedImage = cacheDictionary["statusImage"] {
+                            self.statusImageView.image = cachedImage
+                        } else {
+                            
+                            if let data = data {
+                                
+                                let image = UIImage(data: data)
+                                
+                                //cache
+                                
+                                cacheDictionary["statusImage"] = image
+                                
+                                DispatchQueue.main.async {
+                                    self.statusImageView.image = image
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        
+
+                    }
+                    
+                })//end of task
+                
+                task.resume()
             }
             
         }
@@ -342,16 +380,20 @@ extension UIColor {
 
 class Post {
     
-    var profileName: String
-    var statusText: String
-    var statusImage: UIImage?
-    var profileImage: UIImage
+    var profileName: String?
+    var statusText: String?
+    var statusImageUrl: String?
+    var profileImage: UIImage?
+    var numLikes: Int?
+    var numComments: Int?
     
-    init (profileName: String, statusText: String, statusImage: UIImage?, profileImage: UIImage) {
+    init (profileName: String, statusText: String, statusImageUrl: String?, profileImage: UIImage, numLikes: Int, numComments: Int) {
         self.profileName = profileName
         self.statusText = statusText
-        self.statusImage = statusImage
+        self.statusImageUrl = statusImageUrl
         self.profileImage = profileImage
+        self.numLikes = numLikes
+        self.numComments = numComments
     }
     
 }
