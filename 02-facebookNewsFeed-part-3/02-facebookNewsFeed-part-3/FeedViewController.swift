@@ -19,6 +19,14 @@ class FeedViewController: UICollectionViewController, UICollectionViewDelegateFl
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        
+        //increasing size of NSURL default cache size
+        let memoryCapacity = 500 * 1024 * 1024
+        let diskCapacity = 500 * 1024 * 1024
+        let urlCache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: "path")
+        URLCache.shared = urlCache
+        
+        
         collectionView?.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
         navigationItem.title = "Facebook Feed"
         
@@ -130,10 +138,7 @@ class CustomFeedCell: UICollectionViewCell {
                     
                     if error == nil {
                         
-                        //if I previously made request, I saved the image
-                        if let cachedImage = cacheDictionary["statusImage"] {
-                            self.statusImageView.image = cachedImage
-                        } else {
+                       
                             
                             if let data = data {
                                 
@@ -145,7 +150,6 @@ class CustomFeedCell: UICollectionViewCell {
                                 
                                 DispatchQueue.main.async {
                                     self.statusImageView.image = image
-                                }
                                 
                             }
                             
